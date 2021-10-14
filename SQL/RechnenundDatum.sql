@@ -257,22 +257,36 @@ select lnr, max(lmenge) from lieferung where ldatum > '23.07.1990' group by lnr;
 select lnr, max(lmenge) from lieferung where ldatum > '23.07.1990' and avg(lmenge) >= 250 group by lnr;   --Fehler
 
 -- In einer where Klausel dürfen keine Aggregatfunktionen stehen
--- dafür wird die Having-Klausel verwendet (where-Klauselder Group-by Klausel)
+-- dafür wird die Having-Klausel verwendet (where-Klausel der Group-by Klausel)
 
 select lnr, max(lmenge) from lieferung where ldatum > '23.07.1990' group by lnr having avg(lmenge) >= 250;  
 
 
 ----------------Übungen:
 
-select * from lieferung where month(ldatum) = '08';
+select count(lnr) from lieferung where month(ldatum) = '08';
 
-select * from lieferant where lstadt is NOT NULL;
+select count(lstadt) from lieferant;
 
 select  lnr, min(lmenge) from lieferung group by lnr;
 
 select min(lname) from lieferant where lname like 'S%';
 
+use standard;
+go
 
+select max(amenge) as [Bestand], astadt as [Lagerort] from artikel group by astadt;
+
+
+
+select astadt, count(distinct aname) as[Anzahl] from artikel group by astadt;
+
+select  count(lnr) as [anzahl], anr from lieferung group by anr having count(lnr) <3 ;
+
+
+select lnr, sum(lmenge) as[gesamt] from lieferung where ldatum > '13.07.1990' group by lnr having sum(lmenge)>600;
+
+select max(status) as [max], min(status) as [min], lstadt from lieferant where lnr between 'L01' and 'L99' group by lstadt having min(status)>10 and  max(status) <= 50;
 
 
 
