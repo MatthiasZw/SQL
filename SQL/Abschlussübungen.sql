@@ -14,7 +14,7 @@ select anr, aname, gewicht /1000 as[gewicht in kg] from artikel;
 
 ---4. Namen aller Lieferanten aus Aachen mit mit statuswert zwischen 20 und 30
 
-select  lname from lieferant where status between 20 and 30;
+select  lname from lieferant where status between 20 and 30 and lstadt= 'Aachen';
 
 ---5. Nummern und Namen aller Artikel deren Gewicht 12, 14, oder 17 gramm beträgt;
 
@@ -42,12 +42,12 @@ select a.anr, b.anr from artikel as a join artikel as b on a.astadt=b.astadt  an
 
 ---10 Nummern aller Lieferanten die mindestens einen Artikel geliefert haben den auch 'L03' geliefert hat
 
- select lnr from lieferung where anr in(select anr from lieferung where lnr ='L03');
+ select lnr from lieferung where anr in(select anr from lieferung where lnr ='L03') and lnr <> 'L03';
 
 
 --- 11. Nummern aller Lieferanten die mehr als einen Artikel geliefert haben
 
-select lnr from lieferung group by lnr having count(anr) >1;
+select lnr from lieferung group by lnr having count(distinct anr) >1;
 
 
 ---12. Nummern und Namen der Artikel die am selben Ort wie 'A03' gelagert werden
@@ -107,11 +107,11 @@ select count(lnr) from lieferung where lnr in( select lnr from lieferant where l
 
 --- 25. Ortsnamen die Wohnort aber nicht Lagerort sind
 
-select lstadt from lieferant except (select astadt from artikel);
+select distinct lstadt from lieferant except (select astadt from artikel);
 
 --- 26. Ortsnamen die sowohl Wohnort als auch Lagerort sind
 
-select lstadt from lieferant intersect (select astadt from artikel);
+select distinct lstadt from lieferant intersect (select astadt from artikel);
 
 
 
