@@ -34,16 +34,16 @@ go
 
 
 create table orte
-(ortid bigint not null,   ------->intergalaktische Ort-Id
-plz bigint not null,
+(ortid bigint not null,   
+plz char(5) not null,
 ortsname varchar(500) not null);
 go
 
 
 create table abteilung
-(abt_nr bigint not null,
+(abt_nr varchar(3) not null,
 abt_name varchar(100) not null,
-ortid bigint not null);
+ortid bigint  null);
 
 go
 
@@ -52,10 +52,10 @@ create table mitarbeiter
 (m_nr bigint not null identity (1000,1),
 m_name varchar(100) not null,
 m_vorname varchar(100) not null,
-ortid bigint not null,
+ortid bigint null,
 strasse varchar(100) null,
 geb_dat date not null,
-abt_nr bigint null);
+abt_nr varchar(3) null);
 
 go
 
@@ -63,7 +63,7 @@ go
 create table telefon
 (m_nr bigint not null,
 vorw bigint not null,
-tel_nr bigint null);
+tel_nr char(100) null);
 
 go
 
@@ -141,7 +141,7 @@ go
 
  alter table projekt add constraint mittel_chk check(mittel <= 2000000);
 
- alter table orte add constraint ortid_chk check(ortid like '[Erfurt] [Weimar] [Jena] [Gotha] [Suhl] [Nordhausen] [Sömmerda]');
+ alter table orte add constraint ortid_chk check(ortsname = 'Erfurt' or ortsname ='Weimar' or ortsname ='Jena' or ortsname ='Gotha' or ortsname ='Suhl' or ortsname ='Nordhausen' or ortsname ='Sömmerda');
 
  alter table orte add constraint plt_chk check(plz like '[0-9][0-9][0-9][0-9][0-9]');
 
@@ -160,4 +160,22 @@ go
  go*/
 
  
+
+
+insert into orte values (12345, 98765, 'Erfurt');
+
+insert into abteilung values('a1', 'Verwaltung', 12345);
+
+INSERT INTO mitarbeiter
+ ([m_name]
+ ,[m_vorname]
+ ,[ortid]
+ ,[strasse]
+ ,[geb_dat]
+ ,[abt_nr])
+VALUES ('Wurst', 'Hans', 12345, 'Holzweg', '01.01.1990', 'a1');
+
+select * from mitarbeiter;
+select* from abteilung;
+select * from orte;
 
