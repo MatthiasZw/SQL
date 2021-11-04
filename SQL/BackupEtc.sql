@@ -77,6 +77,76 @@ restore labelonly from standard_sicher;
 
 restore headeronly from standard_sicher;
 
+insert into verwaltung.lieferant values ('L22', 'Kupfer', 10, 'Tannroda');
+
+
+--- Jetzt stellen wir fest, dass ein Device mit Daten defekt ist, 
+-- Die Geschäftsregeln besagen dass so wenig Datenverlust wie möglich (gar keiner) stattfinden soll
+
+-- Wir sichern jetzt das protokollfragmenet und überführen die Datenbank standard in den Wiederherstellungsmodus
+
+use master
+
+backup log standard to standard_sicher with name='fragment', norecovery;
+
+-- Datenbanken aus einer Sicherung Wiederherstellen
+
+-- Alle Datenbanken außer Master und tempdb werden auf die gleiche Weise wiederhergestellt
+-- tempdb kann nicht wiederhergestellt werden und  master wird von außen wiederhergestellt
+
+
+-- Wiederherstellung erfolgt mit dem Objekt-Explorer oder, viel besser, mit "restore..." weil msdb nicht immer in Ordnung sein muss
+
+restore headeronly from standard_sicher;
+go
+
+restore database standard from standard_sicher with file = 1, norecovery;
+restore database standard from standard_sicher with file = 9, norecovery;
+
+restore log standard from standard_sicher with file = 10, norecovery;
+go
+restore log standard from standard_sicher with file = 11, norecovery;
+go
+restore log standard from standard_sicher with file = 12, norecovery;
+go
+restore log standard from standard_sicher with file = 13, recovery;
+
+
+use standard
+go
+select * from verwaltung.lieferant;
+
+
+
+-- Wiederherstellen der Systemdatenbanken Master und msdb
+
+-- erst sichern
+
+backup database master to master_sicher with name = 'vollstaendig', format;
+
+backup database msdb to msdb_sicher with name = 'vollstaendig', format;
+
+
+restore headeronly from master_sicher;
+go
+
+restore headeronly from msdb_sicher;
+go
+
+
+-- 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
